@@ -1,0 +1,1 @@
+mongoimport --username root --password password --authenticationDatabase admin --db demo --collection recipes --file recipes.json --jsonArray
