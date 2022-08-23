@@ -1,0 +1,137 @@
+basePath: /
+definitions:
+  main.Recipe:
+    properties:
+      id:
+        type: string
+      ingredients:
+        items:
+          type: string
+        type: array
+      instructions:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      publishedAt:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: Mohamed Labouardy
+    url: http://www.swagger.io/support
+  description: This is a sample recipes API. You can find out more about the API at
+    https://github.com/PacktPublishing/Building-Distributed-Applications-in-Gin.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Gin Recipes API
+  version: 1.0.0
+paths:
+  /recipes:
+    get:
+      operationId: recipes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Recipe'
+      summary: get all items in recipe list
+    post:
+      consumes:
+      - application/json
+      operationId: create-recipe
+      parameters:
+      - description: recipe data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.Recipe'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Recipe'
+        "400":
+          description: Bad Request
+      summary: add new recipe to the list
+  /recipes/{id}:
+    delete:
+      operationId: delete-recipe-by-id
+      parameters:
+      - description: recipe ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Recipe'
+        "404":
+          description: Not Found
+      summary: delete a recipe item by ID
+    put:
+      consumes:
+      - application/json
+      operationId: update-recipe
+      parameters:
+      - description: update ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: data values
+        in: body
+        name: id
+        required: true
+        schema:
+          $ref: '#/definitions/main.Recipe'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Recipe'
+        "404":
+          description: Not Found
+      summary: update recipe by ID
+  /recipes/search:
+    get:
+      parameters:
+      - description: recipe search by tag
+        in: query
+        name: tag
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Recipe'
+            type: array
+        "404":
+          description: Not Found
+      summary: get recipe by tag name
+schemes:
+- http
+swagger: "2.0"
