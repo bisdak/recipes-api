@@ -22,6 +22,7 @@ import (
 
 	_ "github.com/bisdak/recipes-api/docs"
 	"github.com/bisdak/recipes-api/handlers"
+	"github.com/go-redis/redis"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -31,37 +32,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
-
-// // @Summary get recipe by tag name
-// // @Produce json
-// // @Param tag query string false "recipe search by tag"
-// // @Success 200 {array} Recipe
-// // @Failure 404
-// // @Router /recipes/search [get]
-// func SearchRecipesHandler(c *gin.Context) {
-// 	tag := c.Query("tag")
-// 	listOfRecipes := make([]Recipe, 0)
-
-// 	for i := 0; i < len(recipes); i++ {
-// 		found := false
-// 		for _, t := range recipes[i].Tags {
-// 			if strings.EqualFold(t, tag) {
-// 				found = true
-// 				break
-// 			}
-// 		}
-// 		if found {
-// 			listOfRecipes = append(listOfRecipes, recipes[i])
-// 		}
-// 	}
-
-// 	if len(listOfRecipes) == 0 {
-// 		c.JSON(http.StatusNotFound, gin.H{
-// 			"error": "No recipe matched that tag."})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, listOfRecipes)
-// }
 
 var recipesHandler *handlers.RecipesHandler
 
@@ -82,7 +52,16 @@ func init() {
 
 	collection := client.Database(os.Getenv(
 		"MONGO_DATABASE")).Collection("recipes")
-	recipesHandler = handlers.NewRecipesHandler(ctx, collection)
+
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+	status := redisClient.Ping()
+	log.Println(status)
+
+	recipesHandler = handlers.NewRecipesHandler(ctx, collection, redisClient)
 }
 
 func main() {
