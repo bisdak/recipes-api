@@ -1,1 +1,5 @@
 mongoimport --username root --password password --authenticationDatabase admin --db demo --collection recipes --file recipes.json --jsonArray
+
+docker run -v /myredis/conf:/usr/local/etc/redis --name myredis redis redis-server /usr/local/etc/redis/redis.conf
+
+docker run -d --name redisinsight --link redis -p 8001:8001 redislabs/redisinsight
